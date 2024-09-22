@@ -1,5 +1,6 @@
 package com.epam.mjc.nio;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class FileReader {
@@ -17,9 +19,9 @@ public class FileReader {
 
         Path path = Paths.get(file.getPath());
         List<String> arrayOfString = new ArrayList<>();
-        try {
-            String allLines = Files.readString(path);
-            arrayOfString = List.of(allLines.split("\n"));
+        try(BufferedReader reader = Files.newBufferedReader(path)) {
+
+            arrayOfString = reader.lines().collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
         }
