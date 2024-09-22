@@ -1,11 +1,46 @@
 package com.epam.mjc.nio;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class FileReader {
 
     public Profile getDataFromFile(File file) {
-        return new Profile();
+
+        Path path = Paths.get(file.getPath());
+        List<String> arrayOfString = new ArrayList<>();
+        try {
+            String allLines = Files.readString(path);
+            arrayOfString = List.of(allLines.split("\n"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, String> mapList = new HashMap<>();
+        for (String words : arrayOfString) {
+            String[] splitWords = words.split(":");
+            mapList.put(splitWords[0].trim(), splitWords[1].trim());
+        }
+
+        Profile newProfile = new Profile();
+
+        try {
+            newProfile.setName(mapList.get("Name"));
+            newProfile.setAge(Integer.parseInt(mapList.get("Age")));
+            newProfile.setEmail(mapList.get("Email"));
+            newProfile.setPhone(Long.parseLong(mapList.get("Phone")));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return newProfile;
     }
 }
